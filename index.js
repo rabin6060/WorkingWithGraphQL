@@ -3,6 +3,7 @@ import { startStandaloneServer } from '@apollo/server/standalone';
 
 import { typeDefs } from './schema.js';
 import db from './_db.js';
+import cors from 'cors'
 
 const resolvers = {
     Query:{
@@ -74,8 +75,16 @@ const server = new ApolloServer({
     resolvers
 })
 
+
 const {url} = await startStandaloneServer(server,{
     listen:{
         port:4000
-    }
+    },
+    context: async ({ req }) => ({ token: req.headers.token }),
+    cors: {
+        origin: '*',  // Allow requests from all origins
+        credentials: true,
+    },
 })
+
+console.log(`running at port ${url}`)
